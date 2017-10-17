@@ -1,14 +1,16 @@
 {
   "name": "todo-api-node",
   "version": "1.0.0",
-  "description": "",
+  "description": "mongo db course files",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
+  "repository": "https://github.com/eujun/mongo-db-course",
   "dependencies": {
-    "mongodb": "^2.2.33"
+    "mongodb": "^2.2.33",
+    "mongoose": "^4.12.3"
   }
 }
