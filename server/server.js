@@ -9,6 +9,7 @@ var app = express();
 
 app.use(bodyParser.json());
 
+// POST routes
 app.post('/todos', (req, res) => {
   console.log(req.body);
   var todo = new Todo({
@@ -20,8 +21,16 @@ app.post('/todos', (req, res) => {
   }, (e) => {
     res.status(400).send(e);
   });
-})
+});
 
+// GET routes
+app.get('/todos', (req,res) => {
+  Todo.find().then((todos) => {
+    res.send({todos});
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
 
 
 app.listen(3000, () => {
