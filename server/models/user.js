@@ -33,6 +33,7 @@ var UserSchema = new mongoose.Schema({
   }]
 });
 
+//Shows only primary id and email, hides all other information
 UserSchema.methods.toJSON = function () {
   var user = this;
   var userObject = user.toObject();
@@ -40,6 +41,7 @@ UserSchema.methods.toJSON = function () {
   return _.pick(userObject, ['_id', 'email']);
 };
 
+//generate authentication token for user
 UserSchema.methods.generateAuthToken = function () {
   var user = this;
   var access = 'auth';
@@ -52,6 +54,20 @@ UserSchema.methods.generateAuthToken = function () {
   });
 };
 
+//remove the token
+UserSchema.methods.removeToken = function (token) {
+  var user = this;
+
+  return user.update({
+    $pull: {
+      tokens: {
+        token: token
+      }
+    }
+  })
+};
+
+//find user by token
 UserSchema.statics.findByToken = function (token) {
   var User = this;
   var decoded;
@@ -70,6 +86,29 @@ UserSchema.statics.findByToken = function (token) {
  });
 };
 
+//find user by email and password
+UserSchema.statics.findByCredentials = function (email, password) {
+  var User = this;
+
+  return User.findOne({email}).then((user) => {
+    if (!user) {
+      return Promise.reject("User not found.");
+    }
+
+    return new Promise((resolve, reject) => {
+      bcrypt.compare(password, user.password, (err, res) => {
+        if(res){
+          resolve(user);
+        }
+        else {
+          reject("Invalid password");
+        }
+      });
+    });
+  });
+};
+
+//salt and hash password if changed
 UserSchema.pre('save', function (next) {
   var user = this;
 
